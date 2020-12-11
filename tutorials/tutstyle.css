@@ -1,0 +1,46 @@
+.codeContainer {
+  margin: auto;
+  width:75%;
+}
+
+.codeTitle {
+  text-align: center;
+}
+
+.codeExample {
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid black;
+  width: 75%;
+}
+
+.codeInput {
+  vertical-align: top;
+  border: 1px solid black;
+  width: 50%;
+}
+
+.codeOutput {
+  vertical-align: top;
+  border: 1px solid black;
+  width: 50%;
+}
+
+.codeInputLine {
+  margin: 1px;  
+  margin-left: 5px;
+}
+
+.codeOutputLine {
+  margin: 1px;
+  margin-left: 5px;
+}
+
+.codeBlockTitle {
+  margin: 5px;
+  margin-bottom: 15px;
+}
+
+.codeBlockTitleBreak {
+  height: 10px;
+}
