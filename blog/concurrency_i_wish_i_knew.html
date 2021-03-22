@@ -3,8 +3,9 @@
     <title>Things about Concurrency I Wish I was Taught in OS Class</title>
   </head>
   <body>
-    <h1>Things about Concurrency I Wish I was Tuaght in OS Class</h1>
+    <h1>Things about Concurrency I Wish I was Taught in OS Class</h1>
     <hr />
+    <h2> My Beef with Systems II </h2>
     <p>
       There's a lot of things System II (OS class) at OSU taught me, and I'm <br />
       very thankful for everything I learned from there. However, there are <br />
@@ -16,6 +17,74 @@
       (and what I'm sure are many other details) should be left out. Without <br />
       further ado, let's get right to it.
     </p>
-    <h2>1. Machine Instructions needn't be Atomic</h2>
+    <h2> 1. Machine Instructions needn't be Atomic </h2>
+    <p>
+     Generally, I was taught that interrupts happen at the computer, and they <br />
+     can happen at any instruction, which is why we have to have data structures <br />
+     like semaphores, mutexes, etc. However, I did not know that interrupts can <br />
+     actually happen in the middle of an instruction such that some of the side <br />
+     effects of an instruction happen and others don't. An example is STMIA from <br />
+     the ARM instruction set. This stores multiple registers into memory. However, <br />
+     the instruction is allowed to be interrupted such that some registers get stored <br />
+     and others don't at the time of an interrupt. For most software, this doesn't <br />
+     matter. This matters to Operating Systems because writing to certain pieces of <br />
+     memory has such dramatic side effects that writing somewhere twice when it <br />
+     should've only been once is fatal (i.e. memory-mapped IO).
+    </p>
+    <h2> 2. My Program Loads and Stores Things in Order, Right? </h2>
+    <p>
+      Wrong. Modern computers are not only free to execute multiple instructions <br />
+      at once and out of order (which I was taught), but are also free to let <br />
+      their side effects take place out of order (which I was not taught). <br />
+      That means if you ran the below code.
+    </p>
+<pre>
+MOV DWORD PTR [RAX], 24      ; Store new data
+MOV DWORD PTR [RAX + 4], 0   ; Release lock
+</pre>
+    <p>
+      The machine is free to store 0 at [RAX + 4] before storing 24 at [RAX]. <br />
+      This is, of course, very alarming for structures like semaphores and <br /> 
+      mutexes, as this means that the critical section hasn't completed even <br />
+      after correct usage of these structures. How architectures deal with this <br />
+      is that they have special instructions to explicitly make it so that all <br />
+      memory accesses before those instructions happen before memory accesses <br />
+      after those instructions. For Intel, it's MFENCE, and for ARM, that's DMB. <br />
+      There are more of these synchronization instructions, but let's keep it <br />
+      simple for now and leve it at that.
+    </p>
+    <h2>3. Everything Needs to be Locked with Semaphores</h2>
+    <p>
+      Oh, heavans, no! There are actually a lot of operations that can be done <br />
+      atomically with the right instructions on the right machines. Not only that, <br />
+      but your OS and/or compiler will have special functions or intrinsics so that <br />
+      you can access these in a machine-independent way. These operations include <br />
+      all the normal operations (bitwise, arithmetic) as well as others like atomic <br />
+      exchange. There will also be functions and intrinsics for memory barriers <br />
+      mentioned above. These make creating "lockless" code less ad hoc and <br />
+      often ends up being more performant than code with locking. <br />
+    </p>
+    <p>
+      For the sake of keeping with the theme of using assembly, let's see some <br />
+      specific assembly examples of these atomic instructions. Let's say that <br />
+      I want to do something straightforward like increment a 64-bit value in memory. <br />
+      To do this atomically in x86_64, we write
+    </p>
+<pre>
+LOCK INC QWORD PTR [RAX]
+</pre>
+    <p>
+      What the "lock prefix" does is make sure that an instruction which would normally <br />
+      not be atomic is atomic. The lock prefix can be applied to a variety of instructions. <br />
+      For the sake of brevity, we'll leave it at that.
+    </p>
+    <h2> End </h2>
+    <p>
+      There's definitely more I haven't gotten to, but this is good material for <br />
+      a concise blog post about some of the problems in concurrency that come up <br />
+      which are, unfortunately, missed in my OS class. <br />
+    </p>
+    <br />
+    <br />
   </body>
 </html>
