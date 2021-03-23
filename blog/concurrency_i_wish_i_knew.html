@@ -51,11 +51,11 @@ MOV DWORD PTR [RAX + 4], 0   ; Release lock
       memory accesses before those instructions happen before memory accesses <br />
       after those instructions. For Intel, it's MFENCE, and for ARM, that's DMB. <br />
       There are more of these synchronization instructions, but let's keep it <br />
-      simple for now and leve it at that.
+      simple for now and leave it at that.
     </p>
     <h2>3. Everything Needs to be Locked with Semaphores</h2>
     <p>
-      Oh, heavans, no! There are actually a lot of operations that can be done <br />
+      Oh, heavens, no! There are actually a lot of operations that can be done <br />
       atomically with the right instructions on the right machines. Not only that, <br />
       but your OS and/or compiler will have special functions or intrinsics so that <br />
       you can access these in a machine-independent way. These operations include <br />
