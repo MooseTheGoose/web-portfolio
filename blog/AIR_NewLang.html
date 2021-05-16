@@ -1,0 +1,136 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>AIR: A New Programming Language for ARM</title>
+  </head>
+  <body>
+    <h1>AIR: A New Programming Language for Modern Machines</h1>
+    <hr>
+    <h2>What is AIR?</h2>
+    <p>
+      ARM Intermediate Representation (AIR) is a new programming language <br />
+      that I'm designing which is a C-like language that includes more <br />
+      operations to better reflect the new capabilities of modern machines <br />
+      and their instruction sets, as well as improve some of the things I <br />
+      don't like about C.
+    </p>
+    <h2>Why AIR?</h2>
+    <p>
+      There are a lot of constructs in machine codes on a variety of machines <br />
+      that translate very nicely to constructs in C. However, not every construct <br />
+      translates so nicely. For instance, regular arithmetic operators (*, /, +, -), <br />
+      are represented in C, but those same operators for GF(2) polynomials are not <br />
+      represented so nicely. The only one represented is polynomial add/subtract (^) <br /> 
+      even though polynomial arithmetic is used in a fair number of algorithms.
+    </p>
+    <p>
+      There are also features in C that are left out that would be a good <br />
+      additions to C. For instance, treating arrays as structures which contain <br />
+      pointer and length information, as well as supporting the conversion of pointers <br />
+      to arrays is something that would be overall positive. A separate, dynamically created <br />
+      type for multidimensional arrays could be done as well. Likewise, AIR can move on from <br />
+      header files to a better package managing system. I haven't worked out the details of that <br />
+      as much, yet.
+    </p>
+    <h2>What would AIR look like?</h2>
+    <p>
+      To start, here's what the "Hello, World" of AIR would look like
+    </p>
+    <pre>
+
+i32 main(string[] argv) {
+  printf("Hello, World\n")
+  return 0
+}
+   </pre>
+    <p>
+      One thing to note is that, instead of main returning 'int', it returns 'i32' instead. <br />
+      Integers are explicitly sized, except for 'int' and 'uint', which are the native int <br />
+      and unsigned int types respectively (i.e., 32 bits on a 32-bit platform, 64 bits on a 64-bit platform). <br />
+    </p>
+    <p>
+      Another thing to note is that argv is an array of strings instead of a pointer to pointer to char, which <br />
+      would be the type of argv in C. This shows that AIR has a dedicated string type. There's also no argc. Where did it <br />
+      go? The answer is that argc is argv.length. Arrays are structures with pointer and length that have some additional <br />
+      syntax to go along with them. Nothing novel. Just things you see in more modern languages.
+    </p>
+    <p>
+      Finally, statements can be, but don't have to be terminated with a semicolon. <br />
+      They can also be terminated by a newline. There are exceptions to this, such as <br />
+      newlines being ignored when inside parantheses.
+    </p>
+    <p>
+      The notation of pointers is different here than in C/C++. Here's an example.
+    </p>
+    <pre>
+
+i32 main(string[] argv) {
+  char! s := (char!)argv[0];
+  printf("EXE name: %s\n", s)
+  printf("First character: %c\n", [s])
+  return 0
+}
+    </pre>
+    <p>
+      ! is no longer the logical not operator. It is the reference operator in AIR <br />
+      (the address operator in C), and it is postfix instead of prefix. There are no <br />
+      logical operators now. Instead, the logical or bitwise version is chosen depending <br />
+      on the datatypes used (like it is in Visual Basic). Likewise, * is not the dereference <br />
+      operator. Instead, the pointer is wrapped in [] to dereference it.
+    </p>
+    <p>
+      Speaking of logical vs bitwise, below is an example of how that plays out.
+    </p>
+    <pre>
+
+i32 main(string[] argv) {
+  i32 x := 0
+  i32 y := 1
+  if ~(bool)x & (bool)y {
+    printf("X is not true, Y is true\n")
+    printf("3 ^ y: %d\n", 3 ^ y)
+  } else if x = y {
+    printf("Either X is true or Y is not true, and x = y\n")
+  }
+  return 0
+}
+    </pre>
+    <p>
+      So there's a separate bool type, and AIR is strongly typed, so <br />
+      you must convert ints to bools to get the logical operator <br />
+      instead of the bitwise operator. Conversion from int to bool <br />
+      is nonzero true and zero false, just like in C/C++.
+    </p>
+    <p> 
+      Now, let's have a bit of fun for this last code sample 
+    </p>
+    <pre>
+
+i32 main() {
+  veci32 acc := {1, 2, 3, 4}
+  veci32 op := {5, 6, 7, 8}
+  acc <<<= op
+  acc *^= op
+  acc *>>= op
+  printf("acc = (%d, %d, %d, %d)\n", acc[0], acc[1], acc[2], acc[3])
+  return 0
+}
+    </pre>
+    <p>
+      First, there are native 128-bit vectors, aligned on 16 byte boundaries. We define <br />
+      some of those, then we perform a left rotate, a polynomial multiply, and a multiply <br />
+      and store high part on the accumulator.
+    </p> 
+    <h2> Conclusion </h2>
+    <p> 
+      I've been building up the language, but this is less novel than it sounds. <br />
+      A lot of C compilers have intrinsics for more machine-specific things like <br />
+      vectors, polynomial arithmetic, bit extractions, and the like, and the typing <br />
+      system is only slightly less basic than C, with a lot of other languages beating it <br />
+      in terms of nuance. Still, if I stopped doing things because other people have already <br />
+      done them, I would never do anything. So, for now, and likely for the rest of the time I work <br />
+      with AIR, "it's just a hobby, it won't be big or professional like C." <br />
+      (Bonus points on CSE trivia to those of you who know what quote I just ripped off).
+    </p>
+  </body>
+</html>
