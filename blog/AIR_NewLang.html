@@ -6,6 +6,12 @@
   <body>
     <h1>AIR: A New Programming Language for Modern Machines</h1>
     <hr>
+    <h2>Depreciated</h2>
+    <p>
+      I'm not going to work on this any time soon. There are a lot of other <br />
+      things I want to do that would be both more rewarding and simpler. <br />
+      Feel free to browse the ideas here, still.
+    </p>
     <h2>What is AIR?</h2>
     <p>
       ARM Intermediate Representation (AIR) is a new programming language <br />
@@ -86,7 +92,7 @@ i32 main(string[] argv) {
 i32 main(string[] argv) {
   i32 x := 0
   i32 y := 1
-  if ~(bool)x & (bool)y {
+  if ~(bool)x &amp; (bool)y {
     printf("X is not true, Y is true\n")
     printf("3 ^ y: %d\n", 3 ^ y)
   } else if x = y {
@@ -109,9 +115,9 @@ i32 main(string[] argv) {
 i32 main() {
   veci32 acc := {1, 2, 3, 4}
   veci32 op := {5, 6, 7, 8}
-  acc <<<= op
+  acc &lt;&lt;&lt;= op
   acc *^= op
-  acc *>>= op
+  acc *&gt;&gt;= op
   printf("acc = (%d, %d, %d, %d)\n", acc[0], acc[1], acc[2], acc[3])
   return 0
 }

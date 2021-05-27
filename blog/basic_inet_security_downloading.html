@@ -1,0 +1,184 @@
+<html>
+  <head>
+    <title>Basic Internet Security Part 1: Downloading Things</title>
+    <style>
+      p { max-width: 500px; }
+    </style>
+  </head>
+  <body>
+    <h1>Basic Internet Security Part 1: Downloading Things</h1>
+    <hr />
+    <h2>Introduction</h2>
+    <p>
+      This is going to be less technical than my other posts. It's more about how the average user of
+      computers can safely browse the internet through browsers like Chrome, Firefox, and the like.
+      Note that I say parts, but the parts aren't really related. You can read them in any order.
+    </p>
+    <h2>Assumptions</h2>
+    <p>
+      We'll assume the following points
+    </p>
+    <ol>
+      <li>Web Browsers can be trusted</li>
+      <li>
+        You can take the following for granted if and only if the browser says your connection is secure
+        <ul>
+          <li>The site is who they say they are</li>
+          <li>Data transmitted is encrypted so that sensitive information can be exchanged</li>
+        </ul>
+      </li>
+    </ol>
+    <p>
+      I may refer to these assumptions as assumption 1, 2 respectively in this post.
+    </p>
+    <p>
+      These assumptions are mostly true in the real world. People use Chrome and Firefox 
+      everyday, and people would notice if these browsers became suddenly malicious and would 
+      hold those responsible very accountable for assumption 1. Your browser uses HTTPS for 
+      assumption 2. You can read more about HTTPS elsewhere if you're curious. While these 
+      assumptions aren't guaranteed to be true, they're good enough for this post to still 
+      be practical in the real world.
+    </p>
+    <h2>Problems with Downloading Things from the Internet</h2>
+    <p>
+      If your browser says your connection is secure, then so long as you trust the site,  
+      you can just download the program without considering it due to assumption 1. However, 
+      downloading the program from just that site has the big disadvantage that it biases 
+      download speeds and costs based on how close you are to the server.
+    </p>
+    <p>
+      To fix this, there exists servers called mirrors which store some content downloadable
+      from the original server, but are hosted in a different location to improve download
+      speeds in that area. 
+    </p>
+    <p>
+      To give an example, say the episodes to my favorite anime are officially 
+      stored as video files in a server in Japan. Video files are really big, and it sucks
+      that I have to download and/or stream those files from such a lousy connection. Therefore,
+      I'll opt to choose a mirror in the US (Ideally, in Ohio). If one doesn't exist, I might do
+      my community a favor by hosting a mirror for others to download from.
+    </p>
+    <p>
+      However, one should already see a really, really, big problem with this.
+      Mirror sites are inherently untrustworthy. Even if the browser says its secure,
+      they're often not credible enough inherently to trust them. Furthermore, a lot of
+      sites will opt out of HTTPS and will use just HTTP to reduce costs, maintenance,
+      and expertise needed, especially in developing countries, which means data isn't
+      encrypted and you can't verify if the site is actually who they say they are. The former
+      isn't bothersome, since it's usually very predictable what you're downloading from
+      the mirror anyways. The latter is the real problem, even for mirrors which
+      are well-established.
+    </p>
+    <h2>Solution: Hashing</h2>
+    <p>
+      People have thought up of solutions to how to retain security while
+      still keeping mirrors around. What they usually entail is having
+      a small signature of the trusted file with some way to verify it hasn't
+      been tampered with, and comparing the generated signature of the 
+      downloaded file to the signature on the secure site. If the signatures
+      match, then the file has not been tampered with. Otherwise, it has.
+    </p>
+    <p>
+      If you think about this method a little, this isn't perfect.
+      There are only so many signatures you can assign before some
+      duplicate signatures pop up. However, these signatures are generated
+      so that it's computationally infeasible to find a file which
+      generates the signature of another, given there isn't a file
+      in some sort of database that luckily matches its signature. It's
+      even harder to actually make a file which is malicious that matches
+      the signature, so this is a really good method given a really good
+      algorithm for generating a signature.
+    </p>
+    <p>
+      What is this signature? Most sites will use what's called a cryptographic
+      hashing algorithm. "Hashing" is a way to turn an arbitrarily sized message into
+      a number, and for 2 equal messages to turn into 2 equal numbers. "Cryptographic" 
+      means the hashing algorithm has the following properties given that an attacker
+      has no database.
+    </p>
+    <ul>
+      <li>Given only the hash, it's computationally infeasible to find any message with the same hash</li>
+      <li>Given the message and its hash, It's computationally infeasible to find a different message with the same hash</li>
+      <li>It's computationally infeasible to find 2 different messages with the same hash</li>
+    </ul>
+    <p>
+      Given these properties, it's perfect to use to generate a file signature, 
+      as the signature can't be easily imitated while tampering a file.
+    </p>
+    <p>
+      The most commonly used hashing algorithms for this are SHA256, SHA512.
+      If a site still uses MD5 or SHA1 as a hashing algorithm, you shouldn't
+      trust it anymore. These hash algorithms used to be good, but as computers
+      got more powerful, it became feasible to generate malicious messages with the same hash.
+    </p>
+    <p>
+      Okay, enough of the theory. Let's apply this with an example.
+      Suppose I download a free video from my favorite anime and I'm
+      given the following SHA256 hash from a website I trust.
+
+      <br /><br />
+      43E1CA90118C443731891D09D446F68CCDBCBD880754169FFBB078DE0FBEC216
+      <br /><br />
+
+      I download the video from http://oh.the-best-anime-mirror.org/
+      on a Windows machine and it's in my downloads folder. Then
+      I can open up Powershell, and go into my downloads folder.
+      The bottom line will look like this
+    </p>
+    <pre>PS C:\Users\Moose\Downloads&gt;</pre>
+    <p>
+      After I type 'Get-FileHash -Algorithm "SHA256" favorite_anime_S1_E7.mp4' and press enter, 
+      the output will look like this. 
+    </p>
+    <pre>PS C:\Users\Moose\Downloads&gt; Get-FileHash -Algorithm "SHA256" favorite_anime_S1_E7.mp4
+    Algorithm           Hash                                                                Path
+    ----------         --------                                                            -------
+    SHA256             43E1CA90118C443731891D09D446F68CCDBCBD880754169FFBB078DE0FBEC216    C:\Users\Moose\Downloads\favo...
+    </pre>
+    <p>
+      Because the hash output matches letter by letter to the hash I was given,
+      I can reasonably doubt that the file has been tampered with and watch
+      the episode I've been waiting to watch for a week.
+    </p>
+    <p>
+      This isn't a great tutorial on how to do this. I suggest you look up how to use
+      Powershell, and look up "Get-FileHash" once you're comfortable with Powershell.
+      Learning Powershell for just that is worth it.
+    </p>
+    <h2>How can I trust the hash?</h2>
+    <p>
+      First, if your browser says the site is secure, and you trust the site,
+      then you trust the hash. Otherwise, you're out of luck unless the site
+      you're downloading from has an alternate way to verify. One especially
+      popular way to do so is OpenPGP, and an especially popular implementation
+      is GnuPG. This allows even the untrusted mirror to keep the hash so long
+      as they keep the signature generated by GnuPG.
+    </p>
+    <p>
+      Honestly, this option is more difficult for downloaders to go through,
+      but you'll usually have instructions to go along with the download
+      for how to use gpg, since the hosts to the website will acknowledge
+      this difficulty and also because specific, widely trusted servers
+      are used which the client needs to be aware of.
+    </p>
+    <h2>Conclusion</h2>
+    <p>
+      We discussed how to download programs in a secure fashion while still
+      keeping the option to download from a mirror. There are steps that are
+      involved that are more advanced than the average computer user normally
+      deals with, but not dauntingly so. Even when it is, hosts of the downloads
+      are usually very accomodating to the end user and provide enough help
+      to deal with the extra complexity.
+    </p>
+    <p>
+      Below are sources to read more on the subjects above.
+    </p>
+    <ul>
+      <li><a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function">Wikipedia: Cryptographic Hashing</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP">Wikipedia: OpenPGP</a></li>
+      <li><a href="https://docs.microsoft.com/en-us/powershell/scripting/overview?view=powershell-7.1">Microsoft: Powershell</a></li>
+      <li><a href="https://gnupg.org/">GnuPG Home Page</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/SHA-2">Wikipedia: SHA-256, SHA-512, SHA-2</a></li>
+    </ul>
+  </body>
+</html>
