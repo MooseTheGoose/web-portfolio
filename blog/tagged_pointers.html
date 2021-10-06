@@ -1,28 +1,29 @@
 <html>
   <head>
     <title>Tag, You're It: Introduction to Tagged Pointers</title>
+    <style> p { max-width: 500px; } </style>
   </head>
   <body>
     <h1>Tag, You're It: Introduction to Tagged Pointers</h1>
     <hr />
     <h2>What are Tagged Pointers?</h2>
     <p>
-      If you've taken a class that's similar to Systems I that went over low-level <br />
-      computer organization, you'll know that certain data types are aligned  <br />
-      differently. For instance, on x86, words are aligned on a 2-byte boundary, <br />
+      If you've taken a class that's similar to Systems I that went over low-level 
+      computer organization, you'll know that certain data types are aligned  
+      differently. For instance, on x86, words are aligned on a 2-byte boundary, 
       dwords on a 4-byte boundary, and qwords on an 8-byte boundary.
     </p>
     <p>
-      Because virtual addresses to certain data needs to be aligned, the lower bits <br />
-      of addresses are unused, and "tags" can be stored there, which are bits <br />
-      associated with the address. For instance, in a garbage collector, a tag <br />
-      can be stored to mark a reference as strong or weak. This has the advantage <br />
-      of both saving memory and making atomic access to these members along with <br />
-      the address easier and more performant. Addresses which pack these tag bits <br />
+      Because virtual addresses to certain data needs to be aligned, the lower bits 
+      of addresses are unused, and "tags" can be stored there, which are bits 
+      associated with the address. For instance, in a garbage collector, a tag 
+      can be stored to mark a reference as strong or weak. This has the advantage 
+      of both saving memory and making atomic access to these members along with 
+      the address easier and more performant. Addresses which pack these tag bits 
       inside themselves are called tagged pointers. 
     </p>
     <p>
-      Below is an example of how to store and extract tags with x86 assembly <br />
+      Below is an example of how to store and extract tags with x86 assembly 
       language which goes off of the previous garbage collector example.
     </p>
     <pre>
@@ -31,20 +32,20 @@ OR EAX, 1                    ; Mark object as weak
 MOV [ESP + obj_offset], EAX  ; Store object in stack</pre>
     <h2>Tagged pointers in C/C++</h2>
     <p>
-      Pointers in C/C++ represent addresses and, while you can't do things like <br />
-      bitwise ops with them portably, among other things, (though most compilers will  <br />
-      let you get away with it) you can convert them to integers which let you do <br />
-      those operations. In fact, there's even a data type defined in stdint.h called <br />
+      Pointers in C/C++ represent addresses and, while you can't do things like 
+      bitwise ops with them portably, among other things, (though most compilers will  
+      let you get away with it) you can convert them to integers which let you do 
+      those operations. In fact, there's even a data type defined in stdint.h called 
       (u)intptr_t for the purpose of converting pointers to integers and vice versa.
     </p>
     <p>
-      Now, the conversion from pointer to integer and vice versa is actually <br />
-      implementation-defined. However, for a paging memory model, that <br />
-      conversion normally stores the virtual address in the integer. <br />
-      Interestingly, x86 has a segmented memory model along with paging, <br />
-      and the conversion process for that simply ignores the segment number.  <br />
-      This is a behavior that many programs rely on currently, and is unlikely <br />
-      to change in the future. Below is an example of how this conversion looks. <br />
+      Now, the conversion from pointer to integer and vice versa is actually 
+      implementation-defined. However, for a paging memory model, that 
+      conversion normally stores the virtual address in the integer. 
+      Interestingly, x86 has a segmented memory model along with paging, 
+      and the conversion process for that simply ignores the segment number.  
+      This is a behavior that many programs rely on currently, and is unlikely 
+      to change in the future. Below is an example of how this conversion looks. 
     </p>
     <pre>
 void * ptr;
@@ -53,9 +54,9 @@ rawaddress = (uintptr_t)ptr;
 ptr = (void *)rawaddress;</pre>
   <h2>How do I do it?</h2>
   <p>
-    To give a basic example, consider a straightforward structure of a  <br />
-    red-black tree in a language without tagged pointers, like Java. <br />
-    Here's what it would look like. <br />
+    To give a basic example, consider a straightforward structure of a  
+    red-black tree in a language without tagged pointers, like Java. 
+    Here's what it would look like. 
   </p>
   <pre>
 public class RBTree&lt;T extends Comparable&lt;T&gt;&gt; {
@@ -94,35 +95,35 @@ int compareData(struct RBTreeData * lhs, struct RBTree * rhs);
 // color = RBTREE_RED(tagged);</pre>
   <h2>Pros and Cons</h2>
   <p>
-    As mentioned before, tags can save some space. Some bytes <br />
-    here and there might not seem a lot, but this extra space <br />
-    can make you evict more cache lines than you asked for, <br />
-    especially for data structures which have poor locality <br />
-    of reference, like trees. Even then, where tags really <br />
-    shine is their ability to very closely associate pointers <br />
-    with very important information associated with them. <br />
-    Accessing multiple pieces of data compactly and atomically <br />
-    like this is like a magic trick that comes up strangely often, <br />
-    and it remains cool every time. Tags can even be used to help <br />
-    memory safety in languages like C. ARM uses the Memory Tagging <br />
-    Extensions to mark pointers to identify whether a pointer points <br /> 
+    As mentioned before, tags can save some space. Some bytes 
+    here and there might not seem a lot, but this extra space 
+    can make you evict more cache lines than you asked for, 
+    especially for data structures which have poor locality 
+    of reference, like trees. Even then, where tags really 
+    shine is their ability to very closely associate pointers 
+    with very important information associated with them. 
+    Accessing multiple pieces of data compactly and atomically 
+    like this is like a magic trick that comes up strangely often, 
+    and it remains cool every time. Tags can even be used to help 
+    memory safety in languages like C. ARM uses the Memory Tagging 
+    Extensions to mark pointers to identify whether a pointer points  
     to the heap, stack, etc., to give an example.
   </p>
   <p>
-    As for cons, most modern languages actually have no such <br />
-    capability, for one, so you can't even apply this same <br />
-    trick in applications in those languages. Honestly, this <br />
-    is very understandable, since implementers of these languages <br />
-    often need tags to implement the runtime, or just can't trust <br />
-    you with tags to retain the memory safety these languages claim. <br />
-    Speaking of which, memory safety. Tagged pointers can both help <br />
+    As for cons, most modern languages actually have no such 
+    capability, for one, so you can't even apply this same 
+    trick in applications in those languages. Honestly, this 
+    is very understandable, since implementers of these languages 
+    often need tags to implement the runtime, or just can't trust 
+    you with tags to retain the memory safety these languages claim. 
+    Speaking of which, memory safety. Tagged pointers can both help 
     and hurt the memory safety of your program. Be careful with them.
   </p>
   <h2>Conclusion</h2>
   <p>
-    Tagged pointers are really cool, and I recommend you play around <br />
-    with them a bit on your own time to get a feel for them and how <br />
-    they can be useful. That being said, make sure you understand <br />
+    Tagged pointers are really cool, and I recommend you play around 
+    with them a bit on your own time to get a feel for them and how 
+    they can be useful. That being said, make sure you understand 
     alignment so that you understand when it works and when it doesn't.
   </p>
   <p>

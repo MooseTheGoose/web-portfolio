@@ -1,41 +1,41 @@
 <html>
   <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>AIR: A New Programming Language for ARM</title>
+    <style>p { max-width: 500px; }</style>
   </head>
   <body>
     <h1>AIR: A New Programming Language for Modern Machines</h1>
     <hr>
     <h2>Depreciated</h2>
     <p>
-      I'm not going to work on this any time soon. There are a lot of other <br />
-      things I want to do that would be both more rewarding and simpler. <br />
+      I'm not going to work on this any time soon. There are a lot of other 
+      things I want to do that would be both more rewarding and simpler. 
       Feel free to browse the ideas here, still.
     </p>
     <h2>What is AIR?</h2>
     <p>
-      ARM Intermediate Representation (AIR) is a new programming language <br />
-      that I'm designing which is a C-like language that includes more <br />
-      operations to better reflect the new capabilities of modern machines <br />
-      and their instruction sets, as well as improve some of the things I <br />
+      ARM Intermediate Representation (AIR) is a new programming language 
+      that I'm designing which is a C-like language that includes more 
+      operations to better reflect the new capabilities of modern machines 
+      and their instruction sets, as well as improve some of the things I 
       don't like about C.
     </p>
     <h2>Why AIR?</h2>
     <p>
-      There are a lot of constructs in machine codes on a variety of machines <br />
-      that translate very nicely to constructs in C. However, not every construct <br />
-      translates so nicely. For instance, regular arithmetic operators (*, /, +, -), <br />
-      are represented in C, but those same operators for GF(2) polynomials are not <br />
-      represented so nicely. The only one represented is polynomial add/subtract (^) <br /> 
+      There are a lot of constructs in machine codes on a variety of machines 
+      that translate very nicely to constructs in C. However, not every construct 
+      translates so nicely. For instance, regular arithmetic operators (*, /, +, -), 
+      are represented in C, but those same operators for GF(2) polynomials are not 
+      represented so nicely. The only one represented is polynomial add/subtract (^)  
       even though polynomial arithmetic is used in a fair number of algorithms.
     </p>
     <p>
-      There are also features in C that are left out that would be a good <br />
-      additions to C. For instance, treating arrays as structures which contain <br />
-      pointer and length information, as well as supporting the conversion of pointers <br />
-      to arrays is something that would be overall positive. A separate, dynamically created <br />
-      type for multidimensional arrays could be done as well. Likewise, AIR can move on from <br />
-      header files to a better package managing system. I haven't worked out the details of that <br />
+      There are also features in C that are left out that would be a good 
+      additions to C. For instance, treating arrays as structures which contain 
+      pointer and length information, as well as supporting the conversion of pointers 
+      to arrays is something that would be overall positive. A separate, dynamically created 
+      type for multidimensional arrays could be done as well. Likewise, AIR can move on from 
+      header files to a better package managing system. I haven't worked out the details of that 
       as much, yet.
     </p>
     <h2>What would AIR look like?</h2>
@@ -50,19 +50,19 @@ i32 main(string[] argv) {
 }
    </pre>
     <p>
-      One thing to note is that, instead of main returning 'int', it returns 'i32' instead. <br />
-      Integers are explicitly sized, except for 'int' and 'uint', which are the native int <br />
-      and unsigned int types respectively (i.e., 32 bits on a 32-bit platform, 64 bits on a 64-bit platform). <br />
+      One thing to note is that, instead of main returning 'int', it returns 'i32' instead. 
+      Integers are explicitly sized, except for 'int' and 'uint', which are the native int 
+      and unsigned int types respectively (i.e., 32 bits on a 32-bit platform, 64 bits on a 64-bit platform). 
     </p>
     <p>
-      Another thing to note is that argv is an array of strings instead of a pointer to pointer to char, which <br />
-      would be the type of argv in C. This shows that AIR has a dedicated string type. There's also no argc. Where did it <br />
-      go? The answer is that argc is argv.length. Arrays are structures with pointer and length that have some additional <br />
+      Another thing to note is that argv is an array of strings instead of a pointer to pointer to char, which 
+      would be the type of argv in C. This shows that AIR has a dedicated string type. There's also no argc. Where did it 
+      go? The answer is that argc is argv.length. Arrays are structures with pointer and length that have some additional 
       syntax to go along with them. Nothing novel. Just things you see in more modern languages.
     </p>
     <p>
-      Finally, statements can be, but don't have to be terminated with a semicolon. <br />
-      They can also be terminated by a newline. There are exceptions to this, such as <br />
+      Finally, statements can be, but don't have to be terminated with a semicolon. 
+      They can also be terminated by a newline. There are exceptions to this, such as 
       newlines being ignored when inside parantheses.
     </p>
     <p>
@@ -78,10 +78,10 @@ i32 main(string[] argv) {
 }
     </pre>
     <p>
-      ! is no longer the logical not operator. It is the reference operator in AIR <br />
-      (the address operator in C), and it is postfix instead of prefix. There are no <br />
-      logical operators now. Instead, the logical or bitwise version is chosen depending <br />
-      on the datatypes used (like it is in Visual Basic). Likewise, * is not the dereference <br />
+      ! is no longer the logical not operator. It is the reference operator in AIR 
+      (the address operator in C), and it is postfix instead of prefix. There are no 
+      logical operators now. Instead, the logical or bitwise version is chosen depending 
+      on the datatypes used (like it is in Visual Basic). Likewise, * is not the dereference 
       operator. Instead, the pointer is wrapped in [] to dereference it.
     </p>
     <p>
@@ -102,9 +102,9 @@ i32 main(string[] argv) {
 }
     </pre>
     <p>
-      So there's a separate bool type, and AIR is strongly typed, so <br />
-      you must convert ints to bools to get the logical operator <br />
-      instead of the bitwise operator. Conversion from int to bool <br />
+      So there's a separate bool type, and AIR is strongly typed, so 
+      you must convert ints to bools to get the logical operator 
+      instead of the bitwise operator. Conversion from int to bool 
       is nonzero true and zero false, just like in C/C++.
     </p>
     <p> 
@@ -123,19 +123,19 @@ i32 main() {
 }
     </pre>
     <p>
-      First, there are native 128-bit vectors, aligned on 16 byte boundaries. We define <br />
-      some of those, then we perform a left rotate, a polynomial multiply, and a multiply <br />
+      First, there are native 128-bit vectors, aligned on 16 byte boundaries. We define 
+      some of those, then we perform a left rotate, a polynomial multiply, and a multiply 
       and store high part on the accumulator.
     </p> 
     <h2> Conclusion </h2>
     <p> 
-      I've been building up the language, but this is less novel than it sounds. <br />
-      A lot of C compilers have intrinsics for more machine-specific things like <br />
-      vectors, polynomial arithmetic, bit extractions, and the like, and the typing <br />
-      system is only slightly less basic than C, with a lot of other languages beating it <br />
-      in terms of nuance. Still, if I stopped doing things because other people have already <br />
-      done them, I would never do anything. So, for now, and likely for the rest of the time I work <br />
-      with AIR, "it's just a hobby, it won't be big or professional like C." <br />
+      I've been building up the language, but this is less novel than it sounds. 
+      A lot of C compilers have intrinsics for more machine-specific things like 
+      vectors, polynomial arithmetic, bit extractions, and the like, and the typing 
+      system is only slightly less basic than C, with a lot of other languages beating it 
+      in terms of nuance. Still, if I stopped doing things because other people have already 
+      done them, I would never do anything. So, for now, and likely for the rest of the time I work 
+      with AIR, "it's just a hobby, it won't be big or professional like C." 
       (Bonus points on CSE trivia to those of you who know what quote I just ripped off).
     </p>
   </body>

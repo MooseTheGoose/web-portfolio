@@ -2,6 +2,7 @@
 
 <head>
   <title>CLI Part 1: Architecture</title>
+  <style>p { max-width: 500px; }</style>
 </head>
 
 <body>
@@ -9,76 +10,76 @@
   <hr />
   <h2>What's this Series?</h2>
   <p>
-    First, it's not really a series. Feel free to read these <br />
-    out of order. Second, I've been learning C# and VB.NET and <br />
-    reading ECMA-335 to get familiar with the architecture and <br />
-    want to give an informal commentary on each partition and <br />
-    my thoughts on each. I may also mention other things I've <br />
+    First, it's not really a series. Feel free to read these 
+    out of order. Second, I've been learning C# and VB.NET and 
+    reading ECMA-335 to get familiar with the architecture and 
+    want to give an informal commentary on each partition and 
+    my thoughts on each. I may also mention other things I've 
     learned from my time with C# and VB.NET in general.
   </p>
   <h2>CLI: "Common Language" Infrastructure</h2>
   <p>
-    To accomodate multiple languages is certainly a very abnormal <br />
-    choice. Most similar software architectures and runtimes are <br />
-    centered on just one language (The "C" Runtime, the "Java" <br />
-    Runtime Environment, etc.). Yes, it's not the only one <br />
-    (ECMAScript immediately comes to mind), but it's still <br />
+    To accomodate multiple languages is certainly a very abnormal 
+    choice. Most similar software architectures and runtimes are 
+    centered on just one language (The "C" Runtime, the "Java" 
+    Runtime Environment, etc.). Yes, it's not the only one 
+    (ECMAScript immediately comes to mind), but it's still 
     a more rare case.
   </p>
   <h2>Common Runtime Across Languages, for Languages</h2>
   <p>
-    One really hard part about creating languages is to create their <br />
-    associated runtimes. Modern runtimes have a lot of blood, sweat, <br />
-    and tears behind them. Even when they're conceptually simple like <br />
-    the C runtime, making the functions optimized and correct (some of  <br />
-    which have to be thread-safe) like they are now in libraries like <br />
-    glibc is amazing. The fact that the CLI not only accomodates <br />
-    multiple languages like the Java Runtime Environment (Which it <br />
-    actually can do. That's why Kotlin and Scala exist), but that <br />
+    One really hard part about creating languages is to create their 
+    associated runtimes. Modern runtimes have a lot of blood, sweat, 
+    and tears behind them. Even when they're conceptually simple like 
+    the C runtime, making the functions optimized and correct (some of  
+    which have to be thread-safe) like they are now in libraries like 
+    glibc is amazing. The fact that the CLI not only accomodates 
+    multiple languages like the Java Runtime Environment (Which it 
+    actually can do. That's why Kotlin and Scala exist), but that 
     it proactively takes steps to improve that aspect is exciting.
   </p>
   <h2>Everything and the Kitchen Sink</h2>
   <p>
-    This accomodation does come at the cost of complexity (lots of it). <br />
-    Because it accomodates so many languages and features, it's difficult <br />
-    to design a language which includes everything it can within CLI. <br />
-    Luckily, languages don't have to (and most don't). They instead have <br />
-    to conform to what ECMA-335 calls "profiles". Normally, languages also <br />
-    conform to a pre-defined specification ECMA-335 calls "Common Language <br />
-    Specification" (CLS) which generally encourages language interop while <br />
-    keeping language implementation simple and languages expressive. <br />
+    This accomodation does come at the cost of complexity (lots of it). 
+    Because it accomodates so many languages and features, it's difficult 
+    to design a language which includes everything it can within CLI. 
+    Luckily, languages don't have to (and most don't). They instead have 
+    to conform to what ECMA-335 calls "profiles". Normally, languages also 
+    conform to a pre-defined specification ECMA-335 calls "Common Language 
+    Specification" (CLS) which generally encourages language interop while 
+    keeping language implementation simple and languages expressive. 
   </p>
   <h2>Metadata, Metadata, and More Metadata</h2>
   <p>
-    The CLI is very metadata-driven. What I mean is that, instead of <br />
-    compiling physical offsets and fields like is done in more native <br />
-    languages, the language compiles data and their attributes without <br />
-    specifying how data is stored physically. This leaves the runtime <br /> 
-    to optimize such things and to provide better management and safety. <br /> 
+    The CLI is very metadata-driven. What I mean is that, instead of 
+    compiling physical offsets and fields like is done in more native 
+    languages, the language compiles data and their attributes without 
+    specifying how data is stored physically. This leaves the runtime  
+    to optimize such things and to provide better management and safety.  
     This also makes binaries much more platform-independent.
   </p>
   <p>
-    Like many other features in CLI, Java also does this. The CLI <br />
-    does this differently, of course, and they do this in a way that <br />
-    makes it easier or even possible to implement common features <br />
-    like value types, generics, and pointers (both "managed" and <br />
+    Like many other features in CLI, Java also does this. The CLI 
+    does this differently, of course, and they do this in a way that 
+    makes it easier or even possible to implement common features 
+    like value types, generics, and pointers (both "managed" and 
     "unmanaged"). Speaking of which!
   </p>
   <h2> Pointers </h2>
   <p>
-    CLI has what are called "managed" pointers, which are like <br />
-    pointers, but they are offsets to managed memory (which can <br />
-    be moved!) instead of unmanaged memory. They also have unmanaged <br />
-    pointers, along with IntPtr from System.Runtime.InteropServices.Marshal <br />
-    to specify pointers which act similarly to the pointers we all know <br />
-    and love from C/C++. As an aside, the C/C++ interop game of CLI is really <br />
-    strong, not necessarily because it's more capable than interop in other <br />
-    languages, but because it's easier and creates much less friction. <br />
+    CLI has what are called "managed" pointers, which are like 
+    pointers, but they are offsets to managed memory (which can 
+    be moved!) instead of unmanaged memory. They also have unmanaged 
+    pointers, along with IntPtr from System.Runtime.InteropServices.Marshal 
+    to specify pointers which act similarly to the pointers we all know 
+    and love from C/C++. As an aside, the C/C++ interop game of CLI is really 
+    strong, not necessarily because it's more capable than interop in other 
+    languages, but because it's easier and creates much less friction. 
   </p>
   <h2> End </h2>
   <p>
-    That's all I really have to say about the CLI so far. I'll come out with <br />
-    another part when I'm done with Partition II of ECMA-335. Until then, <br />
+    That's all I really have to say about the CLI so far. I'll come out with 
+    another part when I'm done with Partition II of ECMA-335. Until then, 
     it's time to do more reading.
   </p>
 </body>
